@@ -1,0 +1,18 @@
+.supply_item {
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  margin: auto;
+
+  &:not(:last-child) {
+    margin-bottom: 12px;
+  }
+
+  $color_map: (1: red, 2: blue, 3: green, 4: orange, 5: purple, 6: grey, 7: cyan, 8: brown, 9: pink, 10: black);
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      background-color: map-get($color_map, $i);
+    }
+  }
+}
