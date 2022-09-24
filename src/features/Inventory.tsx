@@ -1,6 +1,7 @@
 import {getUId} from "../utils/helpers";
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {InventoryCell} from "../components/InventoryCell";
+import {NotificationPopup} from "../components/NotificationPopup";
 
 export type InventoryProps = PropsWithChildren<{
     rows: number;
@@ -18,6 +19,8 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
     const inventoryContent = React.createRef<HTMLDivElement>();
 
     const [inventoryState, setInventoryState] = useState<string[]>([]);
+
+    const [errorState, setErrorState] = useState<{ title: string; showPopup: boolean }>({title: '', showPopup: false});
 
 
     const createNewInventoryItem = (width: number, height: number) => {
@@ -58,7 +61,8 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
         return colNumber + x - 1 > columns || rowNumber + y - 1 > rows;
     }
 
-    const validateCustomItemPosition = (fullBoxesList: string[]) => {
+    const validateCustomItemPosition = (id: number, x: number, y: number) => {
+        const fullBoxesList = getFullBoxesListOnAddItem(id, x, y);
         return !!fullBoxesList.filter(item => inventoryState.includes(item)).length;
     }
 
@@ -68,33 +72,40 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
         })
     }
 
-    const addItemToInventory = ({boxId, x, y, withDrag}: AddInventoryItemProps) => {
+    const validateNewItem = (id: number, x: number, y: number) => {
+        if(validateCustomItemSize(id, x, y) || validateCustomItemPosition(id, x, y)) {
+            setErrorState({title: 'The selected boxes are full or out of inventory\'s space', showPopup: true});
+            return true
+        }
+    }
+
+    const appendNewInventoryItem = (id: string, x: number, y: number) => {
+        const inventoryBox = document.getElementById(id)!;
+        inventoryBox.appendChild(createNewInventoryItem(x, y));
+    }
+
+    const updateItemsData = (itemIdList: string[]) => {
+        inventoryState.push(...itemIdList);
+    }
+
+    const updateInventoryContent = ({boxId, x, y, withDrag}: AddInventoryItemProps) => {
         const numericId = parseInt(boxId.slice(5));
         if (!withDrag) {
-            if(validateCustomItemSize(numericId, x, y)) {
-                alert('Not valid input');
+            if(validateNewItem(numericId, x, y)) {
                 return
             }
-
+            appendNewInventoryItem(boxId, x, y);
             const fullBoxesList = getFullBoxesListOnAddItem(numericId, x, y);
-            if(validateCustomItemPosition(fullBoxesList)) {
-                alert('Not enough space');
-                return
-            }
-            const inventoryBox = document.getElementById(boxId)!;
-            inventoryBox.appendChild(createNewInventoryItem(x, y));
-            inventoryState.push(...fullBoxesList);
+            updateItemsData(fullBoxesList);
         } else {
-            inventoryState.push(boxId);
+            updateItemsData([boxId]);
         }
-
-        // FIXME: try to use setState as supposed
         setInventoryState(inventoryState);
         disableDropOnFullItems(inventoryState);
     }
 
     useEffect(() => {
-        window.addInventory = (boxId: string, x: number, y: number) => addItemToInventory({boxId, x, y, withDrag: false});
+        window.addInventory = (boxId: string, x: number, y: number) => updateInventoryContent({boxId, x, y, withDrag: false});
     },[]);
 
     useEffect(() => {
@@ -104,15 +115,21 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
     }, [rows, columns]);
 
     return (
+        <>
         <div className="inventory">
             <h1 className="inventory_header header">Inventory</h1>
             <div className="inventory_content" ref={inventoryContent}>
                 {Array.from(Array(rows * columns).keys()).map((i: number) => {
                     const id = `item_${i + 1}`;
-                    return <InventoryCell cellId={id} key={id} isFull={false} onAddInventoryItem={addItemToInventory}/>;
+                    return <InventoryCell cellId={id} key={id} isFull={false} onAddInventoryItem={updateInventoryContent}/>;
                 })}
             </div>
         </div>
+        {errorState.showPopup && <NotificationPopup title={errorState.title} onPopupClose={() => setErrorState({
+            title: '',
+            showPopup: false
+        })}/>}
+    </>
     )
 }
 
