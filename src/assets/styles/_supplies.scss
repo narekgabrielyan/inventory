@@ -1,0 +1,16 @@
+.supplies {
+  width: 120px;
+  border-radius: 8px;
+
+  .supplies_header {
+    padding: 0 8px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  .supplies_list {
+    padding: 8px 0;
+    border: 2px solid #000;
+    border-radius: 4px;
+  }
+}
