@@ -1,13 +1,15 @@
 import React from 'react';
-import SuppliesWrapper from "./features/SuppliesWrapper";
+import Supplies from "./features/Supplies";
 import './assets/styles/all.scss';
+import Inventory from "./features/Inventory";
 
 function App() {
-  return (
-    <div className="root">
-      <SuppliesWrapper itemsCount={5}/>
-    </div>
-  );
+    return (
+        <div className="root">
+            <Supplies/>
+            <Inventory/>
+        </div>
+    );
 }
 
 export default App;
