@@ -1,0 +1,17 @@
+.inventory {
+  flex-grow: 1;
+  min-width: 0;
+  margin: 0 8px;
+  font-size: 18px;
+  text-align: center;
+
+  .inventory_cells {
+    display: grid;
+    grid-template-columns: repeat(17, 1fr);
+    grid-template-rows: repeat(6, 100px);
+    grid-gap: 4px;
+    border-radius: 4px;
+    border: 4px solid #000;
+    background-color: #000;
+  }
+}
