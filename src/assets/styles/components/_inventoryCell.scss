@@ -21,6 +21,10 @@
     }
   }
 
+  &-full {
+    pointer-events: none;
+  }
+
   .supply_item {
     width: var(--width, 100%);
     height: var(--height, 100%);
@@ -29,6 +33,6 @@
     left:0;
     z-index: 1;
     font-size: 18px;
-    border: 2px solid #000;
+    border: 1px solid #000;
   }
 }

@@ -15,15 +15,10 @@ export type AddInventoryItemProps = {
 }
 
 export const Inventory = ({rows, columns}: InventoryProps) => {
-    interface InventoryItem {
-        boxId: string;
-        itemCols: number;
-        itemRows: number;
-    }
-
     const inventoryContent = React.createRef<HTMLDivElement>();
 
-    const [inventoryState, setInventoryState] = useState<InventoryItem[]>([]);
+    const [inventoryState, setInventoryState] = useState<string[]>([]);
+
 
     const createNewInventoryItem = (width: number, height: number) => {
         const item = document.createElement('div');
@@ -36,24 +31,66 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
         return item;
     }
 
-    const validateCustomItem = (id: number, x: number, y: number) => {
-        return id + x > columns || id + y > rows;
+    const getInventoryItemPosition = (id: number) => {
+        const residual = id % columns;
+        const colNumber = residual === 0 ? 4 : residual;
+        const rowNumber = residual === 0 ? id/columns : (id - residual) / columns + 1;
+        return {x: colNumber, y: rowNumber};
+    }
+
+    const getIdFromItemPosition = (x: number, y: number) => {
+        return `item_${(y - 1) * 4 + x}`;
+    }
+
+    const getFullBoxesListOnAddItem = (id: number, x: number, y: number) => {
+        const itemPosition = getInventoryItemPosition(id);
+        let fullBoxesList = [];
+        for(let i = 0; i < x; i++) {
+            for(let j = 0; j < y; j++) {
+                fullBoxesList.push(getIdFromItemPosition(i + itemPosition.x, j + itemPosition.y));
+            }
+        }
+        return fullBoxesList;
+    }
+
+    const validateCustomItemSize = (id: number, x: number, y: number) => {
+        const {x: colNumber, y: rowNumber} = getInventoryItemPosition(id);
+        return colNumber + x - 1 > columns || rowNumber + y - 1 > rows;
+    }
+
+    const validateCustomItemPosition = (fullBoxesList: string[]) => {
+        return !!fullBoxesList.filter(item => inventoryState.includes(item)).length;
+    }
+
+    const disableDropOnFullItems = (itemsList: string[]) => {
+        itemsList.forEach(item => {
+            document.getElementById(item)!.classList.add('inventory_cell-full');
+        })
     }
 
     const addItemToInventory = ({boxId, x, y, withDrag}: AddInventoryItemProps) => {
+        const numericId = parseInt(boxId.slice(5));
         if (!withDrag) {
-            if(validateCustomItem(parseInt(boxId.slice(5)), x, y)) {
+            if(validateCustomItemSize(numericId, x, y)) {
                 alert('Not valid input');
+                return
+            }
+
+            const fullBoxesList = getFullBoxesListOnAddItem(numericId, x, y);
+            if(validateCustomItemPosition(fullBoxesList)) {
+                alert('Not enough space');
                 return
             }
             const inventoryBox = document.getElementById(boxId)!;
             inventoryBox.appendChild(createNewInventoryItem(x, y));
+            inventoryState.push(...fullBoxesList);
+        } else {
+            inventoryState.push(boxId);
         }
-        const itemData = {boxId, itemCols: x, itemRows: y};
-        inventoryState.push(itemData);
 
         // FIXME: try to use setState as supposed
         setInventoryState(inventoryState);
+        disableDropOnFullItems(inventoryState);
     }
 
     useEffect(() => {
@@ -64,7 +101,7 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
         const contentEl = inventoryContent.current!;
         contentEl.style.setProperty('--rows', rows.toString());
         contentEl.style.setProperty('--cols', columns.toString());
-    })
+    }, [rows, columns]);
 
     return (
         <div className="inventory">

@@ -38,16 +38,15 @@ export const InventoryCell = ({cellId, isFull, onAddInventoryItem}: InventoryCel
         e.stopPropagation(); // stops the browser from redirecting.
         setIsHighLighted(false);
 
-        const sourceEl = document.getElementById(e.dataTransfer.getData('text'))!;
-        e.currentTarget.appendChild(sourceEl);
-
-        // TODO: implement item size logic
         onAddInventoryItem({
             boxId: e.currentTarget.id,
             x: 1,
             y: 1,
             withDrag: true
         });
+
+        const sourceEl = document.getElementById(e.dataTransfer.getData('text'))!;
+        e.currentTarget.appendChild(sourceEl);
     }
 
     return (
