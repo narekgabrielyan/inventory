@@ -1,18 +1,28 @@
 .supply_item {
   width: 100px;
   height: 100px;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: auto;
+  border-radius: 2px;
+  font-size: 22px;
+  font-weight: 600;
 
   &:not(:last-child) {
     margin-bottom: 12px;
   }
 
-  $color_map: (1: red, 2: blue, 3: green, 4: orange, 5: purple, 6: grey, 7: cyan, 8: brown, 9: pink, 10: black);
+  $color_map: ('bag': red, 'bottle': blue, 'knife': green, 'map': orange, 'compass': purple, 'lamp': brown);
 
-  @for $i from 1 through 10 {
-    &:nth-child(#{$i}) {
-      background-color: map-get($color_map, $i);
+  @each $name, $color in $color_map {
+    &-#{$name} {
+      color: #fff;
+      background-color: $color;
     }
+  }
+
+  &-dragged {
+    animation: dragging 2s infinite linear;
   }
 }
