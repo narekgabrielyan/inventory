@@ -25,6 +25,14 @@
   from {
     background-color: #4fc04f;
   } to {
-    background-color: transparent;
+    background-color: #fff;
+  }
+}
+
+@keyframes dropArrow {
+  from {
+    transform: translateX(-50%) translateY(-50%);
+  } to {
+    transform: translateX(-50%) translateY(-60%);
   }
 }

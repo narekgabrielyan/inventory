@@ -7,7 +7,7 @@ export type SupplyItemProps = PropsWithChildren<{
     name: string
 }>;
 
-export const SupplyItem = ({ itemId, name }: SupplyItemProps) => {
+export const SupplyItem = ({itemId, name}: SupplyItemProps) => {
     const [isDragged, setIsDragged] = useState(false);
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -28,6 +28,8 @@ export const SupplyItem = ({ itemId, name }: SupplyItemProps) => {
     })
 
     return (
-        <div id={itemId} className={supplyItemCn} onDragStart={handleDragStart} onDragEnd={handleDragEnd} draggable>{name}</div>
+        <div id={itemId} className={supplyItemCn} onDragStart={handleDragStart} onDragEnd={handleDragEnd} draggable>
+            {name}
+        </div>
     )
 }

@@ -7,7 +7,7 @@ function App() {
     return (
         <div className="root">
             <Supplies/>
-            <Inventory/>
+            <Inventory rows={3} columns={4}/>
         </div>
     );
 }

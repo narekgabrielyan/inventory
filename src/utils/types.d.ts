@@ -1,9 +1,7 @@
-import {AddInventoryItemProps} from "../features/Inventory";
-
 export {};
 
 declare global {
     interface Window {
-        addInventory: ({boxId, x, y, withDrag}: AddInventoryItemProps) => void;
+        addInventory: (boxId, x, y) => void;
     }
 }

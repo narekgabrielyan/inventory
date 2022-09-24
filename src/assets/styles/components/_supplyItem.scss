@@ -25,4 +25,8 @@
   &-dragged {
     animation: dragging 2s infinite linear;
   }
+
+  &-custom {
+    background-image: radial-gradient(orange, yellow);
+  }
 }

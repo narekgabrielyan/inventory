@@ -37,13 +37,13 @@ export const InventoryCell = ({cellId, isFull, onAddInventoryItem}: InventoryCel
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.stopPropagation(); // stops the browser from redirecting.
         setIsHighLighted(false);
-        const id = e.dataTransfer.getData('text');
-        const sourceEl = document.getElementById(id)!;
+
+        const sourceEl = document.getElementById(e.dataTransfer.getData('text'))!;
         e.currentTarget.appendChild(sourceEl);
-        const currentId = e.currentTarget.id.toString();
+
         // TODO: implement item size logic
         onAddInventoryItem({
-            boxId: currentId,
+            boxId: e.currentTarget.id,
             x: 1,
             y: 1,
             withDrag: true

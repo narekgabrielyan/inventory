@@ -14,35 +14,64 @@ export type AddInventoryItemProps = {
     withDrag: boolean;
 }
 
-export const Inventory = () => {
+export const Inventory = ({rows, columns}: InventoryProps) => {
     interface InventoryItem {
         boxId: string;
         itemCols: number;
         itemRows: number;
     }
 
+    const inventoryContent = React.createRef<HTMLDivElement>();
+
     const [inventoryState, setInventoryState] = useState<InventoryItem[]>([]);
 
-    useEffect(() => {
-        window.addInventory = addItemToInventory;
-    })
+    const createNewInventoryItem = (width: number, height: number) => {
+        const item = document.createElement('div');
+
+        Object.assign(item, {id: getUId(), className: 'supply_item supply_item-custom', innerText: 'Random item'});
+
+        item.style.setProperty('--width', `${width * 100}%`);
+        item.style.setProperty('--height', `${height * 100}%`);
+
+        return item;
+    }
+
+    const validateCustomItem = (id: number, x: number, y: number) => {
+        return id + x > columns || id + y > rows;
+    }
 
     const addItemToInventory = ({boxId, x, y, withDrag}: AddInventoryItemProps) => {
-        const newItem = {boxId, itemCols: x, itemRows: y};
-        // FIXME: try to use setState as supposed
-        inventoryState.push(newItem);
-        setInventoryState(inventoryState);
         if (!withDrag) {
-            console.log("no withDrag")
+            if(validateCustomItem(parseInt(boxId.slice(5)), x, y)) {
+                alert('Not valid input');
+                return
+            }
+            const inventoryBox = document.getElementById(boxId)!;
+            inventoryBox.appendChild(createNewInventoryItem(x, y));
         }
+        const itemData = {boxId, itemCols: x, itemRows: y};
+        inventoryState.push(itemData);
+
+        // FIXME: try to use setState as supposed
+        setInventoryState(inventoryState);
     }
+
+    useEffect(() => {
+        window.addInventory = (boxId: string, x: number, y: number) => addItemToInventory({boxId, x, y, withDrag: false});
+    },[]);
+
+    useEffect(() => {
+        const contentEl = inventoryContent.current!;
+        contentEl.style.setProperty('--rows', rows.toString());
+        contentEl.style.setProperty('--cols', columns.toString());
+    })
 
     return (
         <div className="inventory">
             <h1 className="inventory_header header">Inventory</h1>
-            <div className="inventory_content">
-                {Array.from({length: 102}).map(() => {
-                    const id = `item-${getUId()}`;
+            <div className="inventory_content" ref={inventoryContent}>
+                {Array.from(Array(rows * columns).keys()).map((i: number) => {
+                    const id = `item_${i + 1}`;
                     return <InventoryCell cellId={id} key={id} isFull={false} onAddInventoryItem={addItemToInventory}/>;
                 })}
             </div>
