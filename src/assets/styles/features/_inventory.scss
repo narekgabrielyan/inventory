@@ -5,7 +5,7 @@
   font-size: 18px;
   text-align: center;
 
-  .inventory_cells {
+  .inventory_content {
     display: grid;
     grid-template-columns: repeat(17, 1fr);
     grid-template-rows: repeat(6, 100px);
