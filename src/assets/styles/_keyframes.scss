@@ -20,3 +20,11 @@
     opacity: 1;
   }
 }
+
+@keyframes highlighting {
+  from {
+    background-color: #4fc04f;
+  } to {
+    background-color: transparent;
+  }
+}

@@ -1,13 +1,15 @@
 import type {PropsWithChildren} from "react";
 import cn from "classnames";
 import React, {useState} from "react";
+import {AddInventoryItemProps} from "../features/Inventory";
 
 export type InventoryCellProps = PropsWithChildren<{
     cellId: string;
     isFull: boolean;
+    onAddInventoryItem: ({boxId, x, y, withDrag}: AddInventoryItemProps) => void;
 }>;
 
-export const InventoryCell = ({ cellId, isFull }: InventoryCellProps) => {
+export const InventoryCell = ({cellId, isFull, onAddInventoryItem}: InventoryCellProps) => {
     const [isHighLighted, setIsHighLighted] = useState(false);
 
     const cellCn = cn({
@@ -38,9 +40,18 @@ export const InventoryCell = ({ cellId, isFull }: InventoryCellProps) => {
         const id = e.dataTransfer.getData('text');
         const sourceEl = document.getElementById(id)!;
         e.currentTarget.appendChild(sourceEl);
+        const currentId = e.currentTarget.id.toString();
+        // TODO: implement item size logic
+        onAddInventoryItem({
+            boxId: currentId,
+            x: 1,
+            y: 1,
+            withDrag: true
+        });
     }
 
     return (
-        <div id={cellId} className={cellCn} onDragOver={handleDragOver} onDragEnter={handleDragEnter} onDragLeave={handleDragLeave} onDrop={handleDrop}/>
+        <div id={cellId} className={cellCn} onDragOver={handleDragOver} onDragEnter={handleDragEnter}
+             onDragLeave={handleDragLeave} onDrop={handleDrop}/>
     )
 }
