@@ -1,0 +1,18 @@
+@media only screen and (max-width: 640px) {
+  .root {
+    flex-direction: column;
+    gap: 16px;
+    .supplies_list {
+      display: flex;
+      .supply_item {
+       margin-bottom: 0;
+      }
+    }
+
+    .inventory_cell {
+      .supply_item {
+        font-size: 20px;
+      }
+    }
+  }
+}

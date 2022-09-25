@@ -1,29 +1,21 @@
 .supply_item {
-  width: 100px;
-  height: 100px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: auto;
-  border-radius: 2px;
-  font-size: 22px;
+  font-size: 38px;
   font-weight: 600;
+  cursor: pointer;
+  color: var(--foreground-dark);
 
   &:not(:last-child) {
     margin-bottom: 12px;
   }
 
-  $color_map: ('bag': red, 'bottle': blue, 'knife': green, 'map': orange, 'compass': purple, 'lamp': brown);
-
-  @each $name, $color in $color_map {
-    &-#{$name} {
-      color: #fff;
-      background-color: $color;
-    }
-  }
-
   &-dragged {
-    animation: dragging 2s infinite linear;
+    animation: dragging 1.6s infinite linear;
   }
 
   &-custom {

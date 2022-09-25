@@ -2,6 +2,7 @@ import {getUId} from "../utils/helpers";
 import React, {PropsWithChildren, useEffect, useState} from "react";
 import {InventoryCell} from "../components/InventoryCell";
 import {NotificationPopup} from "../components/NotificationPopup";
+import {randomSupplies} from "../utils/fakeData";
 
 export type InventoryProps = PropsWithChildren<{
     rows: number;
@@ -17,16 +18,13 @@ export type AddInventoryItemProps = {
 
 export const Inventory = ({rows, columns}: InventoryProps) => {
     const inventoryContent = React.createRef<HTMLDivElement>();
-
     const [inventoryState, setInventoryState] = useState<string[]>([]);
-
     const [errorState, setErrorState] = useState<{ title: string; showPopup: boolean }>({title: '', showPopup: false});
 
 
-    const createNewInventoryItem = (width: number, height: number) => {
+    const createNewInventoryItem = (width: number, height: number, name: string) => {
         const item = document.createElement('div');
-
-        Object.assign(item, {id: getUId(), className: 'supply_item supply_item-custom', innerText: 'Random item'});
+        Object.assign(item, {id: getUId(), className:`supply_item icon-${name}`});
 
         item.style.setProperty('--width', `${width * 100}%`);
         item.style.setProperty('--height', `${height * 100}%`);
@@ -34,30 +32,30 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
         return item;
     }
 
-    const getInventoryItemPosition = (id: number) => {
+    const getInventoryItemPosition = (id: number, rows: number, columns: number) => {
         const residual = id % columns;
-        const colNumber = residual === 0 ? 4 : residual;
-        const rowNumber = residual === 0 ? id/columns : (id - residual) / columns + 1;
+        const colNumber = residual === 0 ? columns : residual;
+        const rowNumber = residual === 0 ? id/columns : (id - residual)/columns + 1;
         return {x: colNumber, y: rowNumber};
     }
 
-    const getIdFromItemPosition = (x: number, y: number) => {
-        return `item_${(y - 1) * 4 + x}`;
+    const getIdFromItemPosition = (x: number, y: number, colCount: number) => {
+        return `item_${(y - 1) * colCount + x}`;
     }
 
     const getFullBoxesListOnAddItem = (id: number, x: number, y: number) => {
-        const itemPosition = getInventoryItemPosition(id);
+        const itemPosition = getInventoryItemPosition(id, rows, columns);
         let fullBoxesList = [];
         for(let i = 0; i < x; i++) {
             for(let j = 0; j < y; j++) {
-                fullBoxesList.push(getIdFromItemPosition(i + itemPosition.x, j + itemPosition.y));
+                fullBoxesList.push(getIdFromItemPosition(i + itemPosition.x, j + itemPosition.y, columns));
             }
         }
         return fullBoxesList;
     }
 
     const validateCustomItemSize = (id: number, x: number, y: number) => {
-        const {x: colNumber, y: rowNumber} = getInventoryItemPosition(id);
+        const {x: colNumber, y: rowNumber} = getInventoryItemPosition(id, rows, columns);
         return colNumber + x - 1 > columns || rowNumber + y - 1 > rows;
     }
 
@@ -81,7 +79,8 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
 
     const appendNewInventoryItem = (id: string, x: number, y: number) => {
         const inventoryBox = document.getElementById(id)!;
-        inventoryBox.appendChild(createNewInventoryItem(x, y));
+        const itemName = randomSupplies[Math.floor(Math.random()*randomSupplies.length)].name;
+        inventoryBox.appendChild(createNewInventoryItem(x, y, itemName));
     }
 
     const updateItemsData = (itemIdList: string[]) => {
@@ -94,13 +93,12 @@ export const Inventory = ({rows, columns}: InventoryProps) => {
             if(validateNewItem(numericId, x, y)) {
                 return
             }
-            appendNewInventoryItem(boxId, x, y);
             const fullBoxesList = getFullBoxesListOnAddItem(numericId, x, y);
+            appendNewInventoryItem(boxId, x, y);
             updateItemsData(fullBoxesList);
         } else {
             updateItemsData([boxId]);
         }
-        setInventoryState(inventoryState);
         disableDropOnFullItems(inventoryState);
     }
 

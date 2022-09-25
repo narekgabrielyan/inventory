@@ -7,11 +7,14 @@ export type NotificationPopupProps = PropsWithChildren<{
 
 export const NotificationPopup = ({title, onPopupClose}: NotificationPopupProps) => {
     return (
-        <div className="notification_popup" draggable>
-            <div className="notification_title">
-                {title}
+        <div className="popup_wrapper">
+            <div className="popup_content">
+                <div className="popup_header">Ooops! <i className="icon-warning"/></div>
+                <div className="popup_body">
+                    {title}
+                    <button onClick={() => onPopupClose()}>OK</button>
+                </div>
             </div>
-            <button onClick={() => onPopupClose()}></button>
         </div>
     )
 }

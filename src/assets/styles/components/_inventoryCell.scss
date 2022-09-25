@@ -7,12 +7,13 @@
 
   &-highlighted {
     animation: highlighting 400ms infinite alternate ease-out;
+
     &:before {
       position: absolute;
       content: "";
       top: 50%;
       left: 50%;
-      width: 20%;
+      width: 80%;
       height: 50px;
       background-size: contain;
       background-repeat: no-repeat;
@@ -21,7 +22,7 @@
     }
   }
 
-  &-full {
+  &-full, &-full > * {
     pointer-events: none;
   }
 
@@ -29,10 +30,36 @@
     width: var(--width, 100%);
     height: var(--height, 100%);
     position: absolute;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     z-index: 1;
-    font-size: 18px;
+    font-size: 26px;
     border: 1px solid #000;
+
+
+    $color_map: (
+                  'fb': #1877F2,
+                  'spotify': #1DD05D,
+                  'teleg': #3390EC,
+                  'twitter': #1D9BF0,
+                  'amazon': #F78F00,
+                  'vk': #0077FF,
+                  'steam': linear-gradient(to bottom, #19293F, #1C8AB4),
+                  'youtube': #F70000,
+                  'android': #9FC037,
+                  'pinterest': #C41F26,
+                  'reddit': #F73D17,
+                  'apple': #A5A5A5,
+                  'skype': #00A4E8,
+                  'windows': linear-gradient(135deg, #FD12CC, #37A2FE),
+                  'paypal': #001E68
+    );
+
+    @each $name, $color in $color_map {
+      &.icon-#{$name} {
+        color: var(--foreground-light);
+        background: $color;
+      }
+    }
   }
 }

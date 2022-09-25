@@ -24,12 +24,12 @@ export const SupplyItem = ({itemId, name}: SupplyItemProps) => {
     const supplyItemCn = cn({
         supply_item: true,
         ['supply_item-dragged']: isDragged,
-        [`supply_item-${name}`]: !!name
+        [`icon-${name}`]: !!name
     })
 
     return (
-        <div id={itemId} className={supplyItemCn} onDragStart={handleDragStart} onDragEnd={handleDragEnd} draggable>
-            {name}
+        <div id={itemId} className={supplyItemCn} onDragStart={handleDragStart} onDragEnd={handleDragEnd}
+             title={name.toUpperCase()} draggable>
         </div>
     )
 }
