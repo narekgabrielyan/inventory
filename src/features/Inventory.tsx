@@ -3,18 +3,12 @@ import React, {PropsWithChildren, useEffect, useState} from "react";
 import {InventoryCell} from "../components/InventoryCell";
 import {NotificationPopup} from "../components/NotificationPopup";
 import {randomSupplies} from "../utils/fakeData";
+import {AddInventoryItemProps} from "../utils/types";
 
 export type InventoryProps = PropsWithChildren<{
     rows: number;
     columns: number
 }>;
-
-export type AddInventoryItemProps = {
-    boxId: string;
-    x: number;
-    y: number;
-    withDrag: boolean;
-}
 
 export const Inventory = ({rows, columns}: InventoryProps) => {
     const inventoryContent = React.createRef<HTMLDivElement>();

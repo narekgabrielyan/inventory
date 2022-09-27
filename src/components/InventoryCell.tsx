@@ -1,9 +1,9 @@
 import type {PropsWithChildren} from "react";
 import cn from "classnames";
 import React, {useState} from "react";
-import {AddInventoryItemProps} from "../features/Inventory";
+import {AddInventoryItemProps} from "../utils/types";
 
-export type InventoryCellProps = PropsWithChildren<{
+type InventoryCellProps = PropsWithChildren<{
     cellId: string;
     isFull: boolean;
     onAddInventoryItem: ({boxId, x, y, withDrag}: AddInventoryItemProps) => void;

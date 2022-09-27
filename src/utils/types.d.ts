@@ -14,3 +14,10 @@ export interface Supply {
     id: string;
     name: string;
 }
+
+export type AddInventoryItemProps = {
+    boxId: string;
+    x: number;
+    y: number;
+    withDrag: boolean;
+}

@@ -2,7 +2,7 @@ import type {PropsWithChildren} from "react";
 import React, {useState} from "react";
 import cn from "classnames";
 
-export type SupplyItemProps = PropsWithChildren<{
+type SupplyItemProps = PropsWithChildren<{
     itemId: string;
     name: string
 }>;
